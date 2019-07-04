@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <!-- <script src="../dist/mmd-loader.js"></script> -->
+    <script src="../node_modules/three/build/three.min.js"></script>
+    <script src="../node_modules/three/examples/js/loaders/MMDLoader.js"></script>
+    <script src="../node_modules/three/examples/js/loaders/TGALoader.js"></script>
+
+    <script>
+      const windowHalfX = window.innerWidth / 2
+      const windowHalfY = window.innerHeight / 2
+      window.onload = function() {
+        init()
+      }
+
+      function init() {
+        const mouseX = 0
+        const mouseY = 0
+
+        const clock = new THREE.Clock()
+
+        const container = document.querySelector('#container')
+
+        const camera = new THREE.PerspectiveCamera(
+          45,
+          window.innerWidth / window.innerHeight,
+          1,
+          2000
+        )
+        camera.position.z = 30
+
+        // scene
+
+        const scene = new THREE.Scene()
+
+        const ambient = new THREE.AmbientLight(0x888888)
+        scene.add(ambient)
+
+        const directionalLight = new THREE.DirectionalLight(0x666666)
+        directionalLight.position.set(-1, 1, 1).normalize()
+        scene.add(directionalLight)
+
+        //
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true })
+        renderer.setPixelRatio(window.devicePixelRatio)
+        renderer.setSize(window.innerWidth, window.innerHeight)
+        renderer.setClearColor(new THREE.Color(0xffffff))
+        container.appendChild(renderer.domElement)
+
+        const helper = new THREE.MMDHelper(renderer)
+
+        const loader = new THREE.MMDLoader()
+        loader.setDefaultTexturePath('./models/default/')
+
+        loader.loadModel(
+          'models/model/model.pmd',
+          function(object) {
+            mesh = object
+            mesh.position.y = -10
+
+            helper.add(mesh)
+            helper.setPhysics(mesh)
+
+            scene.add(mesh)
+          },
+          function(xhr) {
+            if (xhr.lengthComputable) {
+              var percentComplete = (xhr.loaded / xhr.total) * 100
+              console.log(Math.round(percentComplete, 2) + '% downloaded')
+            }
+          },
+          function(xhr) {}
+        )
+
+        // document.addEventListener('mousemove', onDocumentMouseMove, false)
+        // window.addEventListener('resize', onWindowResize, false)
+        // animate()
+
+        function animate() {
+          requestAnimationFrame(animate)
+          camera.lookAt(scene.position)
+
+          if (mesh) {
+            helper.animate(clock.getDelta())
+            helper.render(scene, camera)
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <button id="load">load</button>
+    <button id="start">start</button>
+    <button id="stop">stop</button>
+    <div id="container"></div>
+  </body>
+</html>

@@ -7,18 +7,19 @@
   "license": "MIT",
   "types": "src/index.ts",
   "scripts": {
-    "dev": "$(yarn bin)/webpack --watch",
-    "build": "$(yarn bin)/webpack"
+    "dev": "webpack-dev-server -d --progress --colors --display-error-details",
+    "build": "webpack"
   },
   "devDependencies": {
-    "awesome-typescript-loader": "^3.1.2",
+    "ts-loader": "^5.3.3",
     "typescript": "^2.2.1",
-    "webpack": "^2.3.2"
+    "webpack": "^2.3.2",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.2.1"
   },
   "dependencies": {
-    "@types/three": "*",
-    "ammo.js": "^0.0.10",
-    "mmd-parser": "^1.0.3"
+    "mmd-parser": "^1.0.3",
+    "three": "^0.106.2"
   },
   "peerDependencies": {
     "three": "^0.84.0"
